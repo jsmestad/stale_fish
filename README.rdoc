@@ -1,4 +1,4 @@
-= stale_popcorn
+= Stale Popcorn
 
 This gem provides a method for keeping your fixtures in sync with their sources. This will prevent the scenario where your build is broken in production, but CI has a green build to do outdated fixture data.
 
@@ -15,7 +15,6 @@ For a single test:
       StalePopcorn.load_config = "#{RAILS_ROOT}/config/stale_popcorn.yml"
       StalePopcorn.update_stale
     end
-
     ....
   end
 
