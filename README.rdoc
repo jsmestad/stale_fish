@@ -1,0 +1,7 @@
+= stale_popcorn
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 jsmestad. See LICENSE for details.
