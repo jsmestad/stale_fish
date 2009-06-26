@@ -5,10 +5,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "stale_popcorn"
-    gem.summary = %Q{TODO}
+    gem.summary = %Q{keeps fixtures synchronized with sources to prevent outdated fixtures going undetected. }
     gem.email = "justin.smestad@gmail.com"
     gem.homepage = "http://github.com/jsmestad/stale_popcorn"
-    gem.authors = ["jsmestad"]
+    gem.authors = ["Justin Smestad"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 
     gem.add_dependency "fakeweb", ">= 1.2.4"
