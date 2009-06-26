@@ -6,6 +6,22 @@ This gem provides a method for keeping your fixtures in sync with their sources.
 
 Simply drop in a YAML file in your application (for rails, RAILS_ROOT/config/stale_popcorn.yml is preferred) and issue the following commands.
 
+A sample YAML file:
+  --- 
+  stale: 
+    yahoo: 
+      filepath: ./tmp/yahoo.html
+      source: http://www.yahoo.com
+      updated: 
+      frequency: 1.day
+    google: 
+      filepath: ./tmp/google.html
+      source: http://www.google.com
+      updated: 
+      frequency: 2.weeks
+
+Specify one block for every fixture you would like to update. The frequency field takes any relative date included in the ActiveSupport library.
+
 === RSpec
 
 For a single test:
