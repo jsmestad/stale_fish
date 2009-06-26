@@ -1,13 +1,12 @@
-stale:
-
-  google:
-    filepath: google.html
-    frequency: 2.weeks
-    source: http://www.google.com
-    updated:
-
-  yahoo:
-    filename: yahoo.html
-    frequency: 1.day
+--- 
+stale: 
+  yahoo: 
+    filepath: ./tmp/yahoo.html
     source: http://www.yahoo.com
-    updated:
+    updated: 
+    frequency: 1.day
+  google: 
+    filepath: ./tmp/google.html
+    source: http://www.google.com
+    updated: 
+    frequency: 2.weeks
