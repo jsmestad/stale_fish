@@ -1,7 +1,35 @@
 = stale_popcorn
 
-Description goes here.
+This gem provides a method for keeping your fixtures in sync with their sources. This will prevent the scenario where your build is broken in production, but CI has a green build to do outdated fixture data.
+
+== How To
+
+Simply drop in a YAML file in your application (for rails, RAILS_ROOT/config/stale_popcorn.yml is preferred) and issue the following commands.
+
+=== RSpec
+
+For a single test:
+
+  describe UsersController do
+    before do
+      StalePopcorn.load_config = "#{RAILS_ROOT}/config/stale_popcorn.yml"
+      StalePopcorn.update_stale
+    end
+
+    ....
+  end
+
+For all tests:
+
+  Spec::Runner.configure do |config|
+    ...
+    before do
+      StalePopcorn.load_config = "#{RAILS_ROOT}/config/stale_popcorn.yml"
+      StalePopcorn.update_stale
+    end
+    ....
+  end
 
 == Copyright
 
-Copyright (c) 2009 jsmestad. See LICENSE for details.
+Copyright (c) 2009 Justin Smestad. See LICENSE for details.
