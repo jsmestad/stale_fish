@@ -10,6 +10,8 @@ begin
     gem.homepage = "http://github.com/jsmestad/stale_popcorn"
     gem.authors = ["jsmestad"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+
+    gem.dependency "fakeweb", ">= 1.2.4"
   end
 
 rescue LoadError
