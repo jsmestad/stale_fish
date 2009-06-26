@@ -11,7 +11,9 @@ begin
     gem.authors = ["jsmestad"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 
-    gem.dependency "fakeweb", ">= 1.2.4"
+    gem.add_dependency "fakeweb", ">= 1.2.4"
+    gem.add_dependency "rio", ">= 0.4.2"
+    gem.add_dependency "activesupport", ">= 2.1.2"
   end
 
 rescue LoadError
