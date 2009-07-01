@@ -4,10 +4,10 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "stale_popcorn"
+    gem.name = "stale_fish"
     gem.summary = %Q{keeps fixtures synchronized with sources to prevent outdated fixtures going undetected. }
     gem.email = "justin.smestad@gmail.com"
-    gem.homepage = "http://github.com/jsmestad/stale_popcorn"
+    gem.homepage = "http://github.com/jsmestad/stale_fish"
     gem.authors = ["Justin Smestad"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 

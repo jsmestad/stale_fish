@@ -5,8 +5,8 @@ require 'rubygems'
 require 'activesupport' # only used for time helpers
 require 'rio'
 
-module StalePopcorn
-  # no one likes stale popcorn.
+module StaleFish
+  # no one likes stale fish.
 
   def self.config_path=(path)
     @config_path = path
@@ -34,7 +34,7 @@ module StalePopcorn
       @yaml = YAML.load_file(@config_path)
       check_syntax
     else
-      raise Errno::ENOENT, 'invalid path, please set StalePopcorn.config_path than ensure StalePopcorn.valid_path? is true'
+      raise Errno::ENOENT, 'invalid path, please set StaleFish.config_path than ensure StaleFish.valid_path? is true'
     end
   end
 
@@ -65,7 +65,6 @@ protected
   end
 
   def self.process(fixtures)
-    p fixtures
     fixtures.each do |key, value|
       rio(fixtures[key]['source']) > rio(fixtures[key]['filepath'])
       @yaml['stale'][key]['updated'] = DateTime.now
@@ -78,6 +77,5 @@ protected
       f.write(@yaml.to_yaml)
     end
   end
-  
 
 end

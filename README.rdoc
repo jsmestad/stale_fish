@@ -1,10 +1,10 @@
-= Stale Popcorn
+= Stale Fish
 
 This gem provides a method for keeping your fixtures in sync with their sources. This will prevent the scenario where your build is broken in production, but CI has a green build to do outdated fixture data.
 
 == How To
 
-Simply drop in a YAML file in your application (for rails, RAILS_ROOT/config/stale_popcorn.yml is preferred) and issue the following commands.
+Simply drop in a YAML file in your application (for rails, RAILS_ROOT/config/stale_fish.yml is preferred) and issue the following commands.
 
 A sample YAML file:
   --- 
@@ -15,8 +15,8 @@ A sample YAML file:
       updated: 
       frequency: 1.day
     google: 
-      filepath: ./tmp/google.html
-      source: http://www.google.com
+      filepath: git_commit.json
+      source: http://api.github.com/post_commit/
       updated: 
       frequency: 2.weeks
 
@@ -28,8 +28,8 @@ For a single test:
 
   describe UsersController do
     before do
-      StalePopcorn.load_config = "#{RAILS_ROOT}/config/stale_popcorn.yml"
-      StalePopcorn.update_stale
+      StaleFish.load_config = "#{RAILS_ROOT}/config/stale_fish.yml"
+      StaleFish.update_stale
     end
     ....
   end
@@ -39,8 +39,8 @@ For all tests:
   Spec::Runner.configure do |config|
     ...
     before do
-      StalePopcorn.load_config = "#{RAILS_ROOT}/config/stale_popcorn.yml"
-      StalePopcorn.update_stale
+      StaleFish.load_config = "#{RAILS_ROOT}/config/stale_fish.yml"
+      StaleFish.update_stale
     end
     ....
   end
