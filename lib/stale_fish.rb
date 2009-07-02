@@ -15,18 +15,19 @@ module StaleFish
   def self.config_path
     @config_path
   end
-  
+
   def self.valid_path?
     return false if @config_path.nil?
     File.exist?(@config_path)
   end
 
-  def self.update_stale(options={})
+  def self.update_stale(*args)
     # check each file for update
     load_yaml unless @yaml
-    stale = flag_stale
+    stale = flag_stale(args)
     process(stale)
     write_yaml
+    return stale.size
   end
 
   def self.load_yaml
@@ -49,16 +50,26 @@ protected
     end
   end
 
-  def self.flag_stale
-    stale = {}
-    scope = @yaml['stale']
+  def self.flag_stale(args)
+    force = args.pop[:force] if args.last.is_a?(Hash)
+    stale, scope = {}, @yaml['stale']
     scope.each do |key, value|
-      if scope[key]['updated'].blank?
-        stale.merge!({key => scope[key]})
+      if args.empty?
+        if scope[key]['updated'].blank?
+          stale.merge!({key => scope[key]}) 
+        else
+          last_modified = scope[key]['updated']
+          update_on = DateTime.now + eval(scope[key]['frequency'])
+          stale.merge!({key => scope[key]}) if last_modified > update_on
+        end
       else
         last_modified = scope[key]['updated']
         update_on = DateTime.now + eval(scope[key]['frequency'])
-        stale.merge!({key => scope[key]}) if last_modified > update_on
+        if force == true
+          stale.merge!({key => scope[key]}) if args.include?(key)
+        else
+          stale.merge!({key => scope[key]}) if args.include?(key) && (scope[key]['updated'].blank? || last_modified > update_on)
+        end
       end
     end
     return stale
@@ -67,9 +78,12 @@ protected
   def self.process(fixtures)
     fixtures.each do |key, value|
       rio(fixtures[key]['source']) > rio(fixtures[key]['filepath'])
-      @yaml['stale'][key]['updated'] = DateTime.now
+      update_fixture(key)
     end
-    true
+  end
+
+  def self.update_fixture(key)
+    @yaml['stale'][key]['updated'] = DateTime.now
   end
 
   def self.write_yaml
