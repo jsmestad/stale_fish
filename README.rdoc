@@ -45,7 +45,7 @@ For all tests add the following to spec_helper.rb
     ....
   end
 
-== Test::Unit
+=== Test::Unit
 
 For all tests add the following to test_helper.rb
 
