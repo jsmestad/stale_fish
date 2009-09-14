@@ -8,7 +8,9 @@ Simply drop in a YAML file in your application (for rails, RAILS_ROOT/config/sta
 
 A sample YAML file:
 
-  stale: 
+  stale:
+    configuration:
+      use_fakeweb: true
     yahoo: 
       filepath: ./tmp/yahoo.html
       source: http://www.yahoo.com
