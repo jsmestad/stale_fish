@@ -4,9 +4,23 @@ require 'yaml'
 require 'rubygems'
 require 'activesupport' # only used for time helpers
 require 'rio'
+begin
+  require "fakeweb"
+rescue LoadError
+
+end
 
 module StaleFish
   # no one likes stale fish.
+  def self.use_fakeweb=(enabled)
+    @use_fakeweb = enabled
+  end
+
+  def self.use_fakeweb
+    @use_fakeweb
+  end
+
+  self.use_fakeweb = false
 
   def self.config_path=(path)
     @config_path = path
@@ -23,16 +37,30 @@ module StaleFish
 
   def self.update_stale(*args)
     # check each file for update
-    load_yaml unless @yaml
+    load_yaml unless self.yaml.nil?
     stale = flag_stale(args)
     process(stale)
     write_yaml
     return stale.size
   end
 
+  def self.yaml=(data)
+    @yaml = data
+  end
+
+  def self.yaml
+    @yaml
+  end
+
+  class FakeWebNotEnabledError < StandardError; end;
+
+  def self.register_uris
+    raise FakeWebNotEnabledError unless self.use_fakeweb
+  end
+
   def self.load_yaml
     if valid_path?
-      @yaml = YAML.load_file(@config_path)
+      self.yaml = YAML.load_file(@config_path)
       check_syntax
     else
       raise Errno::ENOENT, 'invalid path, please set StaleFish.config_path than ensure StaleFish.valid_path? is true'
@@ -43,6 +71,12 @@ protected
 
   def self.check_syntax
     raise YAML::Error, 'missing stale root element' unless @yaml['stale']
+
+    # Grab Configuration from YAML
+    @configuration = @yaml['stale'].delete('configuration')
+    self.use_fakeweb = (@configuration['use_fakeweb'] || false) unless @configuration.nil?
+
+    # Process remaining nodes as items
     @yaml['stale'].each do |key, value|
       %w{ filepath frequency source }.each do |field|
         raise YAML::Error, "missing #{field} node for #{key}" unless @yaml['stale'][key][field]
@@ -56,7 +90,7 @@ protected
     scope.each do |key, value|
       if args.empty?
         if scope[key]['updated'].blank?
-          stale.merge!({key => scope[key]}) 
+          stale.merge!({key => scope[key]})
         else
           last_modified = scope[key]['updated']
           update_on = DateTime.now + eval(scope[key]['frequency'])
