@@ -1,12 +1,12 @@
 --- 
 stale: 
   yahoo: 
-    filepath: ./tmp/yahoo.html
+    filepath: ..//tmp/yahoo.html
     source: http://www.yahoo.com
     updated: 
     frequency: 1.day
   google: 
-    filepath: ./tmp/google.html
+    filepath: ../tmp/google.html
     source: http://www.google.com
     updated: 
     frequency: 2.weeks

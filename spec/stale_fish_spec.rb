@@ -22,6 +22,17 @@ describe "StaleFish" do
       StaleFish.config_path = @valid_yaml
       lambda { StaleFish.load_yaml }.should_not raise_error(YAML::Error)
     end
+
+    context "with FakeWeb" do
+      it "should register any FakeWeb URI's"
+
+      it "should turn off FakeWeb.allow_net_connect if force flag is passed"
+
+      it "should check for FakeWeb enabled flag in YAML"
+
+      it "should allow an initial call to the live service if outdated timestamp"
+    end
+
   end
 
   context "after loading the config" do
@@ -29,7 +40,7 @@ describe "StaleFish" do
       FileUtils.cp(@valid_yaml, File.dirname(__FILE__)+"/fixtures/stale_fish.orig.yml")
       StaleFish.config_path = @valid_yaml
       StaleFish.valid_path?.should == true
-      StaleFish.load_yaml      
+      StaleFish.load_yaml
     end
 
     it "should update all stale fixtures" do
@@ -49,7 +60,7 @@ describe "StaleFish" do
 
     after(:each) do
       FileUtils.mv(@valid_yaml, File.dirname(__FILE__)+"/../tmp/stale_fish.test.yml")
-      FileUtils.mv(File.dirname(__FILE__)+"/fixtures/stale_fish.orig.yml", @valid_yaml)      
+      FileUtils.mv(File.dirname(__FILE__)+"/fixtures/stale_fish.orig.yml", @valid_yaml)
     end
   end
 end
