@@ -1,14 +1,12 @@
 --- 
-stale:
-  configuration:
-    use_fakeweb: true
+stale: 
   yahoo: 
     filepath: ./tmp/yahoo.html
-    source: http://www.yahoo.com
-    updated: 
     frequency: 1.day
+    updated: 2009-09-14 00:47:54 -06:00
+    source: http://www.yahoo.com
   google: 
     filepath: ./tmp/google.html
-    source: http://www.google.com
-    updated: 
     frequency: 2.weeks
+    updated: 2009-09-14 00:47:54 -06:00
+    source: http://www.google.com

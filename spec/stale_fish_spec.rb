@@ -33,10 +33,6 @@ describe "StaleFish" do
       StaleFish.load_yaml
     end
 
-    it "should throw an error when calling register_uris without FakeWeb" do
-      lambda { StaleFish.register_uris }.should raise_error
-    end
-
     it "should update all stale fixtures" do
       StaleFish.update_stale.should == 2
     end
@@ -64,21 +60,21 @@ describe "StaleFish" do
       @fakeweb_yaml = File.dirname(__FILE__) + '/fixtures/stale_fish_fakeweb.yml'
       StaleFish.config_path = @fakeweb_yaml
       StaleFish.valid_path?.should == true
-    end
-
-    it "should use fakeweb when use_fakeweb is true" do
-      lambda { StaleFish.load_yaml }.should change(StaleFish, :use_fakeweb).from(false).to(true)
+      StaleFish.load_yaml
+      StaleFish.use_fakeweb = true
+      StaleFish.use_fakeweb.should == true
     end
 
     it "should register any FakeWeb URI's" do
-      lambda {  StaleFish.register_uris }.should change { FakeWeb.registered_uri?("http://www.google.com") }.from(false).to(true)
+      StaleFish.register_uri("http://www.google.com", "some shit")
+      FakeWeb.registered_uri?("http://www.google.com").should == true
     end
 
-    it "should turn off FakeWeb.allow_net_connect if force flag is passed"
-
-    it "should check for FakeWeb enabled flag in YAML"
-
-    it "should allow an initial call to the live service if outdated timestamp"
+    it "should turn off FakeWeb.allow_net_connect to process stale fixtures" do
+      FakeWeb.allow_net_connect = false
+      lambda { StaleFish.update_stale(:force => true) }.should_not raise_error
+      lambda { StaleFish.update_stale(:force => true) }.should_not change { FakeWeb.allow_net_connect? }
+    end
 
     after(:each) do
       StaleFish.yaml = nil
