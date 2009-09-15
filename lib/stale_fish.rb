@@ -12,23 +12,14 @@ end
 
 module StaleFish
   # no one likes stale fish.
-  def self.use_fakeweb=(enabled)
-    @use_fakeweb = enabled
-  end
 
-  def self.use_fakeweb
-    @use_fakeweb
+  class << self
+    attr_accessor :use_fakeweb
+    attr_accessor :config_path
+    attr_accessor :yaml
   end
 
   self.use_fakeweb = false
-
-  def self.config_path=(path)
-    @config_path = path
-  end
-
-  def self.config_path
-    @config_path
-  end
 
   def self.valid_path?
     return false if @config_path.nil?
@@ -44,14 +35,6 @@ module StaleFish
     return stale.size
   end
 
-  def self.yaml=(data)
-    @yaml = data
-  end
-
-  def self.yaml
-    !@yaml.nil? ? @yaml['stale'] : @yaml
-  end
-
   def self.register_uri(source_uri, response)
     if self.use_fakeweb && !FakeWeb.registered_uri?(source_uri)
       FakeWeb.register_uri(:any, source_uri, :body => response)
@@ -60,7 +43,7 @@ module StaleFish
 
   def self.load_yaml
     if valid_path?
-      @yaml = YAML.load_file(@config_path)
+      self.yaml = YAML.load_file(@config_path)
       check_syntax
     else
       raise Errno::ENOENT, 'invalid path, please set StaleFish.config_path than ensure StaleFish.valid_path? is true'
@@ -73,20 +56,20 @@ protected
     raise YAML::Error, 'missing stale root element' unless @yaml['stale']
 
     # Grab Configuration from YAML
-    @configuration = @yaml['stale'].delete('configuration')
+    @configuration = self.yaml['stale'].delete('configuration')
     self.use_fakeweb = (@configuration['use_fakeweb'] || false) unless @configuration.nil?
 
     # Process remaining nodes as items
-    @yaml['stale'].each do |key, value|
+    self.yaml['stale'].each do |key, value|
       %w{ filepath frequency source }.each do |field|
-        raise YAML::Error, "missing #{field} node for #{key}" unless @yaml['stale'][key][field]
+        raise YAML::Error, "missing #{field} node for #{key}" unless self.yaml['stale'][key][field]
       end
     end
   end
 
   def self.flag_stale(args)
     force = args.pop[:force] if args.last.is_a?(Hash)
-    stale, scope = {}, self.yaml
+    stale, scope = {}, self.yaml['stale']
     scope.each do |key, value|
       if args.empty?
         if scope[key]['updated'].blank?
@@ -130,7 +113,7 @@ protected
   end
 
   def self.update_fixture(key)
-    @yaml['stale'][key]['updated'] = DateTime.now
+    self.yaml['stale'][key]['updated'] = DateTime.now
   end
 
   def self.write_yaml
