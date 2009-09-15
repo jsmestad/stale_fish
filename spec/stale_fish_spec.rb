@@ -46,6 +46,14 @@ describe "StaleFish" do
       StaleFish.update_stale('google', :force => true).should == 1
     end
 
+    it "should not have any remaining fixtures to update" do
+      StaleFish.update_stale.should == 2
+      StaleFish.yaml = nil           # this will force a reload of the YAML file.
+      StaleFish.yaml.should == nil   # ensure it was reset
+      StaleFish.load_yaml
+      StaleFish.update_stale.should == 0
+    end
+
     it "should notify user, and rollback, if source is no longer valid"
 
     after(:each) do
