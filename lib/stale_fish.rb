@@ -99,16 +99,17 @@ protected
     FakeWeb.allow_net_connect = true if use_fakeweb
 
     fixtures.each do |key, value|
+
       begin
         @response = http.resource(value['source']).get
         File.open(value['filepath'], 'w') { |f| f.write @response.body.to_s }
-
         update_fixture(key)
       rescue Resourceful::UnsuccessfulHttpRequestError
         raise FixtureUpdateFailure, "#{key}'s source: #{value['source']} returned unsuccessfully."
       rescue ArgumentError
         raise MalformedSourceURL, "#{key}'s source: #{value['source']} is not a valid URL path. Most likely it's missing a trailing slash."
       end
+
       register_uri(value['source'], value['filepath'])
     end
 
