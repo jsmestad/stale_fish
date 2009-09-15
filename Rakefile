@@ -5,14 +5,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "stale_fish"
-    gem.summary = %Q{keeps fixtures synchronized with sources to prevent outdated fixtures going undetected. }
+    gem.summary = %Q{ keeps fixtures synchronized with sources to prevent outdated fixtures going undetected. }
     gem.email = "justin.smestad@gmail.com"
     gem.homepage = "http://github.com/jsmestad/stale_fish"
     gem.authors = ["Justin Smestad"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 
     gem.add_dependency "fakeweb", ">= 1.2.4"
-    gem.add_dependency "rio", ">= 0.4.2"
+    gem.add_dependency "resourceful", "~> 0.6.1"
     gem.add_dependency "activesupport", ">= 2.1.2"
   end
 

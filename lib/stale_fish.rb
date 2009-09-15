@@ -3,7 +3,7 @@ require 'ftools'
 require 'yaml'
 require 'rubygems'
 require 'activesupport' # only used for time helpers
-require 'rio'
+require 'resourceful'
 begin
   require "fakeweb"
 rescue LoadError
@@ -13,23 +13,27 @@ end
 module StaleFish
   # no one likes stale fish.
 
+  class FixtureUpdateFailure < StandardError; end
+  class MalformedSourceURL < StandardError;  end
+
   class << self
     attr_accessor :use_fakeweb
     attr_accessor :config_path
     attr_accessor :yaml
     attr_accessor :configuration
+    attr_accessor :http
   end
 
   self.use_fakeweb = false
+  self.http = Resourceful::HttpAccessor.new
 
   def self.valid_path?
-    return false if config_path.nil?
-    File.exist?(config_path)
+    !config_path.nil? ? File.exist?(config_path) : false
   end
 
   def self.update_stale(*args)
     # check each file for update
-    load_yaml #if self.yaml.nil?
+    load_yaml if self.yaml.nil?
     stale = flag_stale(args)
     process(stale)
     write_yaml
@@ -37,28 +41,22 @@ module StaleFish
   end
 
   def self.register_uri(source_uri, response)
-    if use_fakeweb && !FakeWeb.registered_uri?(source_uri)
-      FakeWeb.register_uri(:any, source_uri, :body => response)
-    end
+    FakeWeb.register_uri(:any, source_uri, :body => response) if use_fakeweb && !FakeWeb.registered_uri?(source_uri)
   end
 
   def self.load_yaml
-    if valid_path?
-      self.yaml = YAML.load_file(config_path)
-      raise YAML::Error, 'missing stale root element' unless self.yaml['stale']
+    raise Errno::ENOENT, 'invalid path, please set StaleFish.config_path than ensure StaleFish.valid_path? is true' unless valid_path?
 
-      # Grab Configuration from YAML
-      configuration = self.yaml['stale'].delete('configuration')
-      use_fakeweb = (@configuration['use_fakeweb'] || false) unless configuration.nil?
+    self.yaml = YAML.load_file(config_path)
+    raise YAML::Error, 'missing stale root element' unless self.yaml['stale']
 
-      # Process remaining nodes as items
-      self.yaml['stale'].each do |key, value|
-        %w{ filepath frequency source }.each do |field|
-          raise YAML::Error, "missing #{field} node for #{key}" unless self.yaml['stale'][key][field]
-        end
-      end
-    else
-      raise Errno::ENOENT, 'invalid path, please set StaleFish.config_path than ensure StaleFish.valid_path? is true'
+    # Grab Configuration from YAML
+    self.configuration = self.yaml['stale'].delete('configuration')
+    use_fakeweb = (configuration['use_fakeweb'] || false) unless configuration.nil?
+
+    # Process remaining nodes as items
+    self.yaml['stale'].each do |key, value|
+      %w{ filepath frequency source }.each { |field| raise YAML::Error, "missing #{field} node for #{key}" unless value[field] }
     end
   end
 
@@ -69,27 +67,27 @@ protected
     stale, scope = {}, self.yaml['stale']
     scope.each do |key, value|
       if args.empty?
-        if scope[key]['updated'].blank?
-          stale.merge!({key => scope[key]})
+        if value['updated'].blank?
+          stale.merge!({key => value})
         else
-          last_modified = scope[key]['updated']
-          update_on = DateTime.now + eval(scope[key]['frequency'])
+          last_modified = value['updated']
+          update_on = DateTime.now + eval(value['frequency'])
           if last_modified > update_on
-            stale.merge!({key => scope[key]})
+            stale.merge!({key => value})
           else
-            register_uri(scope[key]['source'], scope[key]['filepath'])
+            register_uri(value['source'], value['filepath'])
           end
         end
       else
-        last_modified = scope[key]['updated']
-        update_on = DateTime.now + eval(scope[key]['frequency'])
+        last_modified = value['updated']
+        update_on = DateTime.now + eval(value['frequency'])
         if force == true
-          stale.merge!({key => scope[key]}) if args.include?(key)
+          stale.merge!({key => value}) if args.include?(key)
         else
-          if args.include?(key) && (scope[key]['updated'].blank? || last_modified > update_on)
-            stale.merge!({key => scope[key]})
+          if args.include?(key) && (value['updated'].blank? || last_modified > update_on)
+            stale.merge!({key => value})
           else
-            register_uri(scope[key]['source'], scope[key]['filepath'])
+            register_uri(value['source'], value['filepath'])
           end
         end
       end
@@ -101,9 +99,17 @@ protected
     FakeWeb.allow_net_connect = true if use_fakeweb
 
     fixtures.each do |key, value|
-      rio(fixtures[key]['source']) > rio(fixtures[key]['filepath'])
-      register_uri(fixtures[key]['source'], fixtures[key]['filepath'])
-      update_fixture(key)
+      begin
+        @response = http.resource(value['source']).get
+        File.open(value['filepath'], 'w') { |f| f.write @response.body.to_s }
+
+        update_fixture(key)
+      rescue Resourceful::UnsuccessfulHttpRequestError
+        raise FixtureUpdateFailure, "#{key}'s source: #{value['source']} returned unsuccessfully."
+      rescue ArgumentError
+        raise MalformedSourceURL, "#{key}'s source: #{value['source']} is not a valid URL path. Most likely it's missing a trailing slash."
+      end
+      register_uri(value['source'], value['filepath'])
     end
 
     FakeWeb.allow_net_connect = false if use_fakeweb

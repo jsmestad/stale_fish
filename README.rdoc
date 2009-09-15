@@ -1,6 +1,16 @@
 = Stale Fish
 
-This gem provides a method for keeping your fixtures in sync with their sources. This will prevent the scenario where your build is broken in production, but CI has a green build to do outdated fixture data.
+This gem provides a method for keeping your fixtures in sync with their sources. This will prevent the scenario where your build is broken in production, but CI has a green build to do outdated fixture data. StaleFish also allows for FakeWeb integration and URI management.
+
+== Features
+
+* Fixture update frequency uses the ActiveSupport relative time DSL
+* Versioned configuration file & fixtures means fixtures are only updated once per project.
+* Manage FakeWeb stubbed URI's through StaleFish
+* Automatic detection for Rails & Rack apps (default configuration locations)
+* Test Framework agnostic (tested with Test::Unit & RSpec)
+* Update all fixtures, specified fixtures, or forced update are all supported through the StaleFish.update_stale(*args) method
+* Fixtures are ONLY updated when a valid HTTP request is made, if server returns anything other than 200, an error is thrown failing the tests.
 
 == How To
 
@@ -66,6 +76,10 @@ For all tests add the following to test_helper.rb
 == More Info
 
 View the wiki: http://wiki.github.com/jsmestad/stale_fish
+
+== Thanks
+
+Paul Sadauskas for his work on Resourceful (used by StaleFish to provide accurate http handling when updating fixtures)
 
 == Copyright
 

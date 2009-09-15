@@ -3,10 +3,10 @@ stale:
   yahoo: 
     filepath: ./tmp/yahoo.html
     frequency: 1.day
-    updated: 2009-09-14 00:47:54 -06:00
-    source: http://www.yahoo.com
+    updated: 2009-09-15T11:58:51-06:00
+    source: http://www.yahoo.com/
   google: 
     filepath: ./tmp/google.html
     frequency: 2.weeks
-    updated: 2009-09-14 00:47:54 -06:00
-    source: http://www.google.com
+    updated: 2009-09-15T11:58:51-06:00
+    source: http://www.google.com/
