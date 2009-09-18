@@ -25,6 +25,8 @@ module StaleFish
   end
 
   self.use_fakeweb = false
+  self.config_path = 'stale_fish.yml'
+
   self.http = Resourceful::HttpAccessor.new
 
   def self.valid_path?
