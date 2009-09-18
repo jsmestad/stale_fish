@@ -10,6 +10,9 @@ rescue LoadError
 
 end
 
+require 'stale_fish/utility'
+require 'stale_fish/fixture_definition'
+
 module StaleFish
   # no one likes stale fish.
 
@@ -22,19 +25,17 @@ module StaleFish
     attr_accessor :yaml
     attr_accessor :configuration
     attr_accessor :http
+    attr_accessor :fixtures
   end
 
+  self.fixtures = []
   self.use_fakeweb = false
-  self.config_path = 'stale_fish.yml'
+  Utility.config_path = 'stale_fish.yml'
   self.http = Resourceful::HttpAccessor.new
-
-  def self.valid_path?
-    !config_path.nil? ? File.exist?(config_path) : false
-  end
 
   def self.update_stale(*args)
     # check each file for update
-    load_yaml if self.yaml.nil?
+    Utility.loader if self.yaml.nil?
     stale = flag_stale(args)
     process(stale)
     write_yaml
@@ -122,9 +123,6 @@ protected
   end
 
   def self.write_yaml
-    File.open(config_path, "w+") do |f|
-      f.write(self.yaml.to_yaml)
-    end
   end
 
 end

@@ -1,35 +1,38 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "StaleFish" do
+
   before do
     @valid_yaml = File.dirname(__FILE__) + "/fixtures/stale_fish.yml"
   end
 
   it "should assign the config file" do
-    StaleFish.config_path = @valid_yaml
-    StaleFish.config_path.should == @valid_yaml
-    StaleFish.valid_path?.should == true
+    StaleFish::Utility.config_path = @valid_yaml
+    StaleFish::Utility.config_path.should == @valid_yaml
+    StaleFish::Utility.valid_path?.should == true
   end
 
   context "when loading the yaml file" do
+
     it "should raise errors on malformed yaml" do
-      StaleFish.config_path = File.dirname(__FILE__) + "/fixtures/malformed_stale_fish.yml"
+      StaleFish::Utility.config_path = File.dirname(__FILE__) + "/fixtures/malformed_stale_fish.yml"
       lambda { StaleFish.load_yaml }.should_not raise_error(Errno::ENOENT)
       lambda { StaleFish.load_yaml }.should raise_error(YAML::Error)
     end
 
     it "should pass on valid yaml" do
-      StaleFish.config_path = @valid_yaml
+      StaleFish::Utility.config_path = @valid_yaml
       lambda { StaleFish.load_yaml }.should_not raise_error(YAML::Error)
     end
 
   end
 
   context "after loading the config" do
+
     before(:each) do
       FileUtils.cp(@valid_yaml, File.dirname(__FILE__)+"/fixtures/stale_fish.orig.yml")
-      StaleFish.config_path = @valid_yaml
-      StaleFish.valid_path?.should == true
+      StaleFish::Utility.config_path = @valid_yaml
+      StaleFish::Utility.valid_path?.should == true
       StaleFish.load_yaml
     end
 
@@ -61,13 +64,15 @@ describe "StaleFish" do
       FileUtils.mv(File.dirname(__FILE__)+"/fixtures/stale_fish.orig.yml", @valid_yaml)
       StaleFish.yaml = nil
     end
+
   end
 
   context "with FakeWeb" do
+
     before(:each) do
       @fakeweb_yaml = File.dirname(__FILE__) + '/fixtures/stale_fish_fakeweb.yml'
-      StaleFish.config_path = @fakeweb_yaml
-      StaleFish.valid_path?.should == true
+      StaleFish::Utility.config_path = @fakeweb_yaml
+      StaleFish::Utility.valid_path?.should == true
       StaleFish.load_yaml
       StaleFish.use_fakeweb = true
       StaleFish.use_fakeweb.should == true
@@ -87,6 +92,7 @@ describe "StaleFish" do
     after(:each) do
       StaleFish.yaml = nil
     end
+
   end
 
 end
