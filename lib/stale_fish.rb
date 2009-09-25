@@ -35,21 +35,18 @@ module StaleFish
     Utility.loader if self.fixtures.empty?
     self.force_flag = args.pop[:force] if args.last.is_a?(Hash)
 
-    if args.empty?
-      stale = fixtures.select { |f| f.is_stale? }
-      fixtures.each do |fixture|
-        fixture.update! if fixture.is_stale?
-        fixture.register_uri if StaleFish.use_fakeweb
-      end
-    else
-      stale = fixtures.select { |f| f.is_stale? && args.include?(f.tag) }
-      fixtures.each do |fixture|
-        if args.include?(fixture.tag)
-          fixture.update! if fixture.is_stale?
-          fixture.register_uri if StaleFish.use_fakeweb
-        end
-      end
+    stale = if args.empty?
+              fixtures.select { |f| f.is_stale? }
+            else
+              fixtures.select { |f| f.is_stale? && args.include?(f.tag) }
+            end
+
+    stale.each do |fixture|
+      fixture.update!
     end
+
+    fixtures.each { |fixture| fixture.register_uri if StaleFish.use_fakeweb }
+
     Utility.writer
     return stale.size
   end
