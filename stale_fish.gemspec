@@ -5,24 +5,28 @@
 
 Gem::Specification.new do |s|
   s.name = %q{stale_fish}
-  s.version = "1.1.3"
+  s.version = "1.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Justin Smestad"]
-  s.date = %q{2009-09-18}
+  s.date = %q{2009-09-25}
   s.email = %q{justin.smestad@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
      "README.rdoc"
   ]
   s.files = [
-    ".document",
-     ".gitignore",
+    ".gitignore",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
      "VERSION",
      "lib/stale_fish.rb",
+     "lib/stale_fish/fakeweb.rb",
+     "lib/stale_fish/fixture_definition.rb",
+     "lib/stale_fish/utility.rb",
+     "spec/deprecation_spec.rb",
+     "spec/fixtures/deprecated_yaml.yml",
      "spec/fixtures/google.html",
      "spec/fixtures/malformed_stale_fish.yml",
      "spec/fixtures/stale_fish.yml",
@@ -39,7 +43,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{keeps fixtures synchronized with sources to prevent outdated fixtures going undetected.}
   s.test_files = [
-    "spec/spec_helper.rb",
+    "spec/deprecation_spec.rb",
+     "spec/spec_helper.rb",
      "spec/stale_fish_spec.rb"
   ]
 
