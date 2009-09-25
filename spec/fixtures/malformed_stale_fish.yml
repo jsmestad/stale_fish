@@ -1,5 +1,5 @@
 stale:
   google:
-    filepath: google.html
+    file_path: google.html
   yahoo:
-    frequency: 2.weeks.ago
+    update_frequency: 2.weeks.ago

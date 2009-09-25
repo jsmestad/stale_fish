@@ -1,12 +1,12 @@
 --- 
 stale: 
   yahoo: 
-    filepath: ./tmp/yahoo.html
-    source: http://www.yahoo.com/
-    updated: 
-    frequency: 1.day
+    file_path: ./tmp/yahoo.html
+    source_url: http://www.yahoo.com/
+    last_updated_at: 
+    update_frequency: 1.day
   google: 
-    filepath: ./tmp/google.html
-    source: http://www.google.com/
-    updated: 
-    frequency: 2.weeks
+    file_path: ./tmp/google.html
+    source_url: http://www.google.com/
+    last_updated_at: 
+    update_frequency: 2.weeks
