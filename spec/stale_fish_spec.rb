@@ -16,13 +16,18 @@ describe "StaleFish" do
 
     it "should raise errors on malformed yaml" do
       StaleFish::Utility.config_path = File.dirname(__FILE__) + "/fixtures/malformed_stale_fish.yml"
-      lambda { StaleFish.load_yaml }.should_not raise_error(Errno::ENOENT)
-      lambda { StaleFish.load_yaml }.should raise_error(YAML::Error)
+      lambda { StaleFish::Utility.loader }.should_not raise_error(Errno::ENOENT)
+      lambda { StaleFish::Utility.loader }.should raise_error(YAML::Error)
     end
 
-    it "should pass on valid yaml" do
+    it "shouldn't fail on valid yaml" do
       StaleFish::Utility.config_path = @valid_yaml
-      lambda { StaleFish.load_yaml }.should_not raise_error(YAML::Error)
+      lambda { StaleFish::Utility.loader }.should_not raise_error(YAML::Error)
+    end
+
+    it "should establish the fixture definitions" do
+      StaleFish::Utility.config_path = @valid_yaml
+      lambda { StaleFish::Utility.loader }
     end
 
   end
@@ -30,10 +35,10 @@ describe "StaleFish" do
   context "after loading the config" do
 
     before(:each) do
-      FileUtils.cp(@valid_yaml, File.dirname(__FILE__)+"/fixtures/stale_fish.orig.yml")
+      FileUtils.cp(@valid_yaml, File.dirname(__FILE__) + "/fixtures/stale_fish.orig.yml")
       StaleFish::Utility.config_path = @valid_yaml
       StaleFish::Utility.valid_path?.should == true
-      StaleFish.load_yaml
+      StaleFish::Utility.loader
     end
 
     it "should update all stale fixtures" do
@@ -51,9 +56,9 @@ describe "StaleFish" do
 
     it "should not have any remaining fixtures to update" do
       StaleFish.update_stale.should == 2
-      StaleFish.yaml = nil           # this will force a reload of the YAML file.
-      StaleFish.yaml.should == nil   # ensure it was reset
-      StaleFish.load_yaml
+      StaleFish.fixtures = []           # this will force a reload of the YAML file.
+      StaleFish.fixtures.should == []   # ensure it was reset
+      StaleFish::Utility.loader
       StaleFish.update_stale.should == 0
     end
 
@@ -62,7 +67,7 @@ describe "StaleFish" do
     after(:each) do
       FileUtils.mv(@valid_yaml, File.dirname(__FILE__)+"/../tmp/stale_fish.test.yml")
       FileUtils.mv(File.dirname(__FILE__)+"/fixtures/stale_fish.orig.yml", @valid_yaml)
-      StaleFish.yaml = nil
+      StaleFish.fixtures = []
     end
 
   end
@@ -73,14 +78,15 @@ describe "StaleFish" do
       @fakeweb_yaml = File.dirname(__FILE__) + '/fixtures/stale_fish_fakeweb.yml'
       StaleFish::Utility.config_path = @fakeweb_yaml
       StaleFish::Utility.valid_path?.should == true
-      StaleFish.load_yaml
+      StaleFish::Utility.loader
       StaleFish.use_fakeweb = true
       StaleFish.use_fakeweb.should == true
     end
 
     it "should register any FakeWeb URI's" do
-      StaleFish.register_uri("http://www.google.com", "some shit")
-      FakeWeb.registered_uri?("http://www.google.com").should == true
+      definition = StaleFish.fixtures.first
+      definition.register_uri
+      FakeWeb.registered_uri?(definition.source_url).should == true
     end
 
     it "should turn off FakeWeb.allow_net_connect to process stale fixtures" do
@@ -90,7 +96,7 @@ describe "StaleFish" do
     end
 
     after(:each) do
-      StaleFish.yaml = nil
+      StaleFish.fixtures = []
     end
 
   end
