@@ -14,7 +14,7 @@ This gem provides a method for keeping your fixtures in sync with their sources.
 
 == How To
 
-Simply drop in a YAML file in your application (for rails, RAILS_ROOT/config/stale_fish.yml is preferred) and issue the following commands.
+Simply drop in a YAML file in your application (default location: {test/spec}/stale_fish.yml; overwrite by setting StaleFish::Utility.config_path) and issue the following commands.
 
 A sample YAML file:
 
@@ -22,15 +22,15 @@ A sample YAML file:
     configuration:
       use_fakeweb: true
     yahoo: 
-      filepath: ./tmp/yahoo.html
-      source: http://www.yahoo.com
-      updated: 
-      frequency: 1.day
+      file_path: ./tmp/yahoo.html
+      source_url: http://www.yahoo.com
+      last_updated_at: 
+      update_frequency: 1.day
     google: 
-      filepath: git_commit.json
-      source: http://api.github.com/post_commit/
-      updated: 
-      frequency: 2.weeks
+      file_path: git_commit.json
+      source_url: http://api.github.com/post_commit/
+      last_updated_at: 
+      update_frequency: 2.weeks
 
 Specify one block for every fixture you would like to update. The frequency field takes any relative date included in the ActiveSupport library.
 
@@ -40,7 +40,6 @@ For a single test add it to a before block
 
   describe UsersController do
     before do
-      StaleFish.load_config = "#{RAILS_ROOT}/config/stale_fish.yml"
       StaleFish.update_stale("facebook", "yahoo")
     end
     ....
@@ -51,7 +50,6 @@ For all tests add the following to spec_helper.rb
   Spec::Runner.configure do |config|
     ...
     before do
-      StaleFish.load_config = "#{RAILS_ROOT}/config/stale_fish.yml"
       StaleFish.update_stale
     end
     ....
@@ -67,7 +65,6 @@ For all tests add the following to test_helper.rb
     self.use_instantiated_fixtures  = false
     ...
     setup do
-      StaleFish.load_config = "#{RAILS_ROOT}/config/stale_fish.yml"
       StaleFish.update_stale
     end
     ...
