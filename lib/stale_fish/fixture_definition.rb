@@ -5,7 +5,7 @@ module StaleFish
     attr_accessor :update_frequency
 
     def is_stale?
-      StaleFish.force_flag || last_updated_at.nil? || ((DateTime.now + update_frequency) > last_updated_at)
+      StaleFish.force_flag || last_updated_at.nil? || ((DateTime.now + eval(update_frequency)) < last_updated_at)
     end
 
     def update!
@@ -20,6 +20,15 @@ module StaleFish
       end
     end
 
+    def output_hash
+<<-EOF
+  #{tag}:
+    file_path: #{file_path}
+    source_url: #{source_url}
+    update_frequency: #{update_frequency}
+    last_updated_at: #{last_updated_at}
+EOF
+    end
   end
 
 end

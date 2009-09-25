@@ -32,10 +32,9 @@ module StaleFish
 
   def self.update_stale(*args)
     # TODO move this to its own spot
+    Utility.loader if self.fixtures.empty?
     self.force_flag = args.pop[:force] if args.last.is_a?(Hash)
 
-    # check each file for update
-    Utility.loader if self.fixtures.empty?
     if args.empty?
       stale = fixtures.select { |f| f.is_stale? }
       fixtures.each do |fixture|

@@ -11,7 +11,6 @@ module StaleFish
     end
 
     def self.loader
-      # TODO: migrate YAML loader (ref. StaleFish.load_yaml)
       raise Errno::ENOENT, 'invalid config path: #{Utility.config_path}; ensure StaleFish::Utility.valid_path? is true' unless Utility.valid_path?
 
       data = YAML.load_file(config_path)
@@ -21,7 +20,9 @@ module StaleFish
 
       raise YAML::Error, 'missing root element' unless data['stale']
 
+      # Reset these
       StaleFish.fixtures = []
+      StaleFish.force_flag = false
 
       deprecated_var_names = {
         'file_path' => 'filepath',
@@ -51,11 +52,16 @@ module StaleFish
     end
 
     def self.writer
-      p StaleFish.fixtures.map(&:to_yaml)
-#      File.open(config_path, "w+") do |f|
-#        f.write(self.yaml.to_yaml)
-#        f.write(StaleFish.fixtures.collect(&:to_yaml))
-#     end
+      string = <<-EOF
+stale:
+  configuration:
+    use_fakeweb: #{StaleFish.use_fakeweb}
+EOF
+      StaleFish.fixtures.each do |fix|
+        string << fix.output_hash
+      end
+
+      File.open(config_path, "w+") { |f| f.write(string) }
     end
   end
 end
