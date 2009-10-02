@@ -22,12 +22,12 @@ A sample YAML file:
     configuration:
       use_fakeweb: true
     yahoo: 
-      file_path: ./tmp/yahoo.html
+      file_path: RAILS_ROOT + '/spec/fixtures/yahoo.html'
       source_url: http://www.yahoo.com
       last_updated_at: 
       update_frequency: 1.day
     google: 
-      file_path: git_commit.json
+      file_path:  RAILS_ROOT + '/spec/fixtures/github_commit.json'
       source_url: http://api.github.com/post_commit/
       last_updated_at: 
       update_frequency: 2.weeks
@@ -47,9 +47,11 @@ For a single test add it to a before block
 
 For all tests add the following to spec_helper.rb
 
+  require 'stale_fish'
+
   Spec::Runner.configure do |config|
     ...
-    before do
+    config.before do
       StaleFish.update_stale
     end
     ....
