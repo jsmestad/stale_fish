@@ -1,11 +1,11 @@
 stale: 
   yahoo: 
     file_path: ./tmp/yahoo.html
-    source_url: http://www.yahoo.com/
+    source_url: http://www.yahoo.com
     last_updated_at: 
     update_frequency: 1.day
   google: 
     file_path: ./tmp/google.html
-    source_url: http://www.google.com/
+    source_url: http://www.google.com
     last_updated_at: 
     update_frequency: 2.weeks

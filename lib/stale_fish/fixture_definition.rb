@@ -11,12 +11,12 @@ module StaleFish
     def update!
       begin
         self.response = StaleFish.http.resource(source_url).get
-        File.open(eval(file_path), 'w') { |file| file.write(response.body.to_s) }
+        File.open(file_path, 'w') { |file| file.write(response.body.to_s) }
         self.last_updated_at = DateTime.now
       rescue Resourceful::UnsuccessfulHttpRequestError
-        raise StaleFish::FixtureUpdateFailure, "#{key}'s source: #{value['source']} returned unsuccessfully."
+        raise StaleFish::FixtureUpdateFailure, "#{tag}'s source: #{source_url} returned unsuccessfully."
       rescue ArgumentError
-        raise StaleFish::MalformedSourceURL, "#{key}'s source: #{value['source']} is not a valid URL path. Most likely it's missing a trailing slash."
+        raise StaleFish::MalformedSourceURL, "#{tag}'s source: #{source_url} is not a valid URL path. Most likely it's missing a trailing slash."
       end
     end
 
