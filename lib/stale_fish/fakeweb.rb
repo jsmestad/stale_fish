@@ -18,7 +18,7 @@ module StaleFish
 
     def register_uri
       if StaleFish.use_fakeweb && !FakeWeb.registered_uri?(:any, source_url)
-        FakeWeb.register_uri(:any, source_url, :body => file_path)
+        FakeWeb.register_uri(:any, source_url, :body => eval(file_path))
       end
     end
 
