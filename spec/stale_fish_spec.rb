@@ -39,6 +39,7 @@ describe "StaleFish" do
       StaleFish::Utility.config_path = @valid_yaml
       StaleFish::Utility.valid_path?.should == true
       StaleFish::Utility.loader
+
     end
 
     it "should update all stale fixtures" do
@@ -86,7 +87,7 @@ describe "StaleFish" do
     it "should register any FakeWeb URI's" do
       definition = StaleFish.fixtures.first
       definition.register_uri
-      FakeWeb.registered_uri?(definition.source_url).should == true
+      FakeWeb.registered_uri?(:any, definition.source_url).should == true
     end
 
     it "should turn off FakeWeb.allow_net_connect to process stale fixtures" do

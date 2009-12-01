@@ -3,7 +3,6 @@ require 'ftools'
 require 'yaml'
 require 'rubygems'
 require 'activesupport' # only used for time helpers
-require 'resourceful'
 
 require 'stale_fish/utility'
 require 'stale_fish/fixture_definition'
