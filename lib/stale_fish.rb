@@ -27,7 +27,6 @@ module StaleFish
 
   self.fixtures = []
   Utility.config_path = 'stale_fish.yml'
-  self.http = Resourceful::HttpAccessor.new
 
   def self.update_stale(*args)
     # TODO move this to its own spot
