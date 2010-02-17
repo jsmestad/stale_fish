@@ -1,20 +1,22 @@
-require 'rubygems'
 require 'rake'
+require 'bundler'
 
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "stale_fish"
-    gem.summary = %Q{ keeps fixtures synchronized with sources to prevent outdated fixtures going undetected. }
+    gem.summary = "keeps fixtures synchronized with sources to prevent outdated fixtures going undetected."
     gem.email = "justin.smestad@gmail.com"
     gem.homepage = "http://github.com/jsmestad/stale_fish"
     gem.authors = ["Justin Smestad"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-    gem.add_dependency "facets"
-    gem.add_dependency "fakeweb", ">= 1.2.4"
-    gem.add_dependency "activesupport", ">= 2.1.2"
+    bundle = Bundler::Definition.from_gemfile('Gemfile')
+    bundle.dependencies.each do |dep|
+      next unless dep.groups.include?(:runtime)
+      gem.add_dependency(dep.name, dep.version_requirements.to_s)
+    end
   end
-
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
