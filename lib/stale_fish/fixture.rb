@@ -8,7 +8,7 @@ module StaleFish
       # check last_updated_at
     end
 
-    def update
+    def update!
       # update
     end
 
