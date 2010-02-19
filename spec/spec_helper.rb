@@ -11,5 +11,9 @@ require 'spec/autorun'
 Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each {|f| require f}
 
 Spec::Runner.configure do |config|
-  # config.include(Rack::Test::Methods)
+
+  config.before :all do
+    StaleFish.configuration = nil
+  end
+
 end

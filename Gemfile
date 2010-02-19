@@ -2,7 +2,7 @@ source :gemcutter
 
 group :runtime do
   gem 'fakeweb'
-  gem 'activesupport'
+  gem 'activesupport', :require => "active_support/core_ext/numeric/time"
 end
 
 group :test do

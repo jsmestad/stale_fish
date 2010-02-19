@@ -1,11 +1,12 @@
 require File.join(File.dirname(__FILE__), *%w[.. spec_helper])
 
 describe StaleFish do
-  before do
-    # use support/stale_fish.yml
-  end
-
   context ".update_stale" do
+    before do
+      # StaleFish.stub!(:config_path).and_return('dude.yml')
+      # use support/stale_fish.yml
+    end
+
     it "should only update outdated fixtures"
 
     context "if applicable," do
@@ -20,5 +21,4 @@ describe StaleFish do
   context ".update_stale!" do
     it "should force update regardless of timestamp"
   end
-
 end
