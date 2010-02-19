@@ -2,6 +2,12 @@
 
 This gem provides a method for keeping your fixtures in sync with their sources. This will prevent the scenario where your build is broken in production, but CI has a green build to do outdated fixture data. StaleFish also allows for FakeWeb integration and URI management.
 
+== NOTICE
+
+1.3.x is a complete rewrite of the StaleFish utility. The API is based on: http://gist.github.com/308260
+
+The information below has not been corrected or updated.
+
 == Features
 
 * Fixture update frequency uses the ActiveSupport relative time DSL
