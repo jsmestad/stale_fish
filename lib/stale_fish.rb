@@ -1,8 +1,9 @@
-require 'active_support/core_ext/numeric/time'
+#require 'active_support/core_ext/numeric/time'
+require 'active_support'
 require 'fakeweb'
 require 'yaml'
 
-require 'stale_fish/fixture'
+require File.join(File.dirname(__FILE__), 'stale_fish', 'fixture')
 
 module StaleFish
   # no one likes stale fish.
@@ -33,5 +34,6 @@ module StaleFish
       def load
         yaml = YAML::load(File.open(configuration)).symbolize_keys!
       end
+
   end
 end
