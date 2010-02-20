@@ -22,7 +22,6 @@ module StaleFish
     end
 
     def update_stale(options={})
-      # this is without force
       fixtures(options).each do |fixture|
         if fixture.is_stale?
           fixture.update!
@@ -31,7 +30,6 @@ module StaleFish
     end
 
     def update_stale!(options={})
-      # forced update regardless
       fixtures(options).each do |fixture|
         fixture.update!
       end
@@ -63,6 +61,11 @@ module StaleFish
 
       def write
         # TODO update the loaded YAML file
+        updated_yaml = []
+        fixtures.each do |fixture|
+          update_yaml << fixture.to_yaml
+        end
+        # output updated yaml
       end
 
   end
