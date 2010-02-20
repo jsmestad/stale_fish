@@ -80,4 +80,9 @@ describe StaleFish do
     end
 
   end
+
+  context ".write" do
+    it "should maintain the original order of the configuration file"
+    it "should overwrite the contents of the YAML file"
+  end
 end

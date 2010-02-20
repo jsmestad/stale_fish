@@ -61,5 +61,9 @@ module StaleFish
         return fixtures
       end
 
+      def write
+        # TODO update the loaded YAML file
+      end
+
   end
 end
