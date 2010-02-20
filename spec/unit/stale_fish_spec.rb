@@ -57,4 +57,10 @@ describe StaleFish do
       StaleFish.update_stale!
     end
   end
+
+  context ".fixtures" do
+    it "should accept the :all parameter"
+    it "should accept the :only parameter with an array of symbols"
+    it "should accept the :except parameter with an array of symbols"
+  end
 end

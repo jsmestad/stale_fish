@@ -23,7 +23,7 @@ module StaleFish
 
     def update_stale(options={})
       # this is without force
-      fixtures.each do |fixture|
+      fixtures(options).each do |fixture|
         if fixture.is_stale?
           fixture.update!
         end
@@ -32,13 +32,18 @@ module StaleFish
 
     def update_stale!(options={})
       # forced update regardless
-      fixtures.each do |fixture|
+      fixtures(options).each do |fixture|
         fixture.update!
       end
     end
 
-    def fixtures
-      @fixtures ||= []
+    def fixtures(params={})
+      if params[:only] || params[:except]
+        only = params[:only] || params[:except]
+        return @fixtures.select { |f| params[:only].includes?(f.name.to_sym) }
+      else
+        @fixtures ||= []
+      end
     end
 
     protected
