@@ -37,12 +37,16 @@ module StaleFish
       end
     end
 
-    def fixtures(params={})
-      if params[:only] || params[:except]
-        only = params[:only] || params[:except]
-        return @fixtures.select { |f| params[:only].includes?(f.name.to_sym) }
+    def fixtures(params=nil)
+      @fixtures ||= []
+      if params.is_a?(Hash)
+        if params[:only]
+          @fixtures.select { |f| params[:only].include?(f.name.to_sym) }
+        elsif params[:except]
+          @fixtures.select { |f| !params[:except].include?(f.name.to_sym) }
+        end
       else
-        @fixtures ||= []
+        @fixtures
       end
     end
 

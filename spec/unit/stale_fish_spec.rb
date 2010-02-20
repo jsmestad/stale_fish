@@ -59,8 +59,25 @@ describe StaleFish do
   end
 
   context ".fixtures" do
-    it "should accept the :all parameter"
-    it "should accept the :only parameter with an array of symbols"
-    it "should accept the :except parameter with an array of symbols"
+    before do
+      StaleFish.fixtures.size.should == 2
+    end
+
+    it "should accept the :all parameter" do
+      StaleFish.fixtures(:all).size == 2
+    end
+
+    it "should accept the :only parameter with an array of symbols" do
+      response = StaleFish.fixtures(:only => [:twitter])
+      response.size.should == 1
+      response.first.name.should == 'twitter'
+    end
+
+    it "should accept the :except parameter with an array of symbols" do
+      response = StaleFish.fixtures(:except => [:twitter])
+      response.size.should == 1
+      response.first.name.should_not == 'twitter'
+    end
+
   end
 end
