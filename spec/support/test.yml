@@ -1,0 +1,14 @@
+stale:
+  twitter:
+    file: 'timeline.json'
+    update_interval: 30.days
+    check_against: http://twitter.com/api/timeline
+    request_type: POST
+    last_updated_at:
+  gh_commits:
+    file: 'commits.xml'
+    update_interval: 3.days
+    check_against: http://api.github.com/commits.xml
+    request_type: GET
+    last_updated_at:
+    

@@ -10,7 +10,7 @@ module StaleFish
     end
 
     def is_stale?
-      if last_updated_at + update_interval < Time.now
+      if (last_updated_at + update_interval) < Time.now
         return true
       else
         return false
@@ -19,6 +19,7 @@ module StaleFish
 
     def update!
       # update fixture
+      # needs to disengage FakeWeb before, and return state after
     end
 
     def to_yaml

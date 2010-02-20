@@ -23,16 +23,33 @@ module StaleFish
 
     def update_stale(options={})
       # this is without force
+      fixtures.each do |fixture|
+        if fixture.is_stale?
+          fixture.update!
+        end
+      end
     end
 
     def update_stale!(options={})
-      # this is with force
+      # forced update regardless
+      fixtures.each do |fixture|
+        fixture.update!
+      end
+    end
+
+    def fixtures
+      @fixtures ||= []
     end
 
     protected
 
       def load
-        yaml = YAML::load(File.open(configuration)).symbolize_keys!
+        @fixtures = []
+        definitions = YAML::load(File.open(configuration))['stale'].symbolize_keys!
+        definitions.each do |key, definition|
+          self.fixtures << StaleFish::Fixture.new(definition.merge({:name => key.to_s}))
+        end
+        return fixtures
       end
 
   end
