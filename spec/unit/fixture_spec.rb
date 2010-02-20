@@ -42,7 +42,24 @@ describe StaleFish::Fixture do
     it "should update the fixture data"
   end
 
+  context "#lock!" do
+    before do
+      @fixture = StaleFish::Fixture.new(:request_type => 'GET',
+                                        :check_against => 'http://google.com/index.html',
+                                        :file => 'index.html')
+    end
+
+    it "should add fakeweb register_uri" do
+      @fixture.lock!.should == true
+    end
+  end
+
   context "#to_yaml" do
     it "should have the proper schema"
+  end
+
+  context "#build_uri" do
+    it "should parse anything with a port as a regular expression"
+    it "should parse anything without a port as a string"
   end
 end
