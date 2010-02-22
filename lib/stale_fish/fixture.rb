@@ -18,8 +18,6 @@ module StaleFish
     end
 
     def update!
-      # update fixture
-      # needs to disengage FakeWeb before, and return state after
       uri, type = URI.parse(check_against), request_type.downcase.to_sym
       Net::HTTP.start(uri.host) { |http|
         response = if type == :post
