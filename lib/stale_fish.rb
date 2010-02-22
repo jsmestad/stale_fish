@@ -12,7 +12,6 @@ module StaleFish
     def setup(config_location=nil)
       self.configuration = config_location
       load
-      register_fixtures
       block_requests
     end
 
@@ -21,11 +20,11 @@ module StaleFish
     end
 
     def configuration
-      @configuration || if defined?(Rails)
-                          File.join(Rails.root, 'spec', 'stale_fish.yml')
-                        else
+      @configuration || #if defined?(Rails)
+                        #  File.join(Rails.root, 'spec', 'stale_fish.yml')
+                        #else
                           'stale_fish.yml'
-                        end
+                        #end
     end
 
     def update_stale(options = :all)
@@ -38,7 +37,7 @@ module StaleFish
           reset_fixtures = true
         end
       end
-      register_fixtures if reset_fixtures
+      drop_locks if reset_fixtures
       block_requests
       write
     end
@@ -48,7 +47,7 @@ module StaleFish
       fixtures(options).each do |fixture|
         fixture.update!
       end
-      register_fixtures
+      drop_locks
       block_requests
       write
     end
@@ -78,27 +77,28 @@ module StaleFish
       end
 
       def write
-        updated_yaml = []
+        updated_yaml = "stale:\n"
         fixtures.each do |fixture|
           updated_yaml << fixture.to_yaml
         end
-        updated_yaml = { :stale => updated_yaml }
-        File.open(configuration, 'w') { |file| updated_yaml.to_yaml }
+        @full_yaml = updated_yaml
+        File.open(configuration, 'w') { |file| file.write(@full_yaml.to_s) }
       end
 
       def allow_requests
+        drop_locks
         FakeWeb.allow_net_connect = true
       end
 
       def block_requests
-        FakeWeb.allow_net_connect = false
-      end
-
-      def register_fixtures
-        FakeWeb.clean_registry
         fixtures.each do |fixture|
           fixture.register_lock!
         end
+        FakeWeb.allow_net_connect = false
+      end
+      
+      def drop_locks
+        FakeWeb.clean_registry
       end
   end
 end

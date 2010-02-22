@@ -35,7 +35,7 @@ module StaleFish
 
     def register_lock!
       uri, type = build_uri, request_type.downcase.to_sym
-      FakeWeb.register_uri(type, uri, :body => file)
+      FakeWeb.register_uri(type, uri, :body => 'hey dude')
 
       return FakeWeb.registered_uri?(type, uri)
     end
@@ -43,12 +43,12 @@ module StaleFish
     def to_yaml
       # update_interval.inspect trick is to prevent Fixnum being written
       yaml = <<-EOF
-#{name}:
-  file: '#{file}'
-  update_interval: #{update_interval.inspect.gsub(/ /, '.')}
-  check_against: #{check_against}
-  request_type: #{request_type}
-  last_updated_at: #{last_updated_at}
+  #{name}:
+    file: '#{file}'
+    update_interval: #{update_interval.inspect.gsub(/ /, '.').gsub(/"/, '')}
+    check_against: #{check_against}
+    request_type: #{request_type}
+    last_updated_at: #{last_updated_at}
 EOF
       return yaml
     end
@@ -72,7 +72,7 @@ EOF
       end
 
       def write_response_to_file(body)
-        File.open(file, "w") { |file| file.write(body) }
+        File.open(File.join(File.dirname(StaleFish.configuration), file), "w") { |file| file.write(body) }
       end
   end
 end

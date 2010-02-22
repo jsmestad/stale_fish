@@ -25,9 +25,9 @@ describe StaleFish::Fixture do
   context "#is_stale?" do
     before do
       @stale_fixture = StaleFish::Fixture.new(:last_updated_at => 1.week.ago,
-                                              :update_interval => 1.day)
+                                              :update_interval => '1.day')
       @fresh_fixture = StaleFish::Fixture.new(:last_updated_at => 1.day.from_now,
-                                              :update_interval => 1.day)
+                                              :update_interval => '1.day')
     end
 
     it "should return true when stale" do
@@ -76,19 +76,19 @@ describe StaleFish::Fixture do
   context "#to_yaml" do
     before do
       @fixture = StaleFish::Fixture.new(:name => 'google',
-                                        :update_interval => 1.day,
+                                        :update_interval => '1.day',
                                         :request_type => 'GET',
                                         :check_against => 'http://google.com/index.html',
                                         :file => 'index.html',
                                         :last_updated_at => @time)
       @proper_yaml =
 <<-EOF
-google:
-  file: 'index.html'
-  update_interval: 1.day
-  check_against: http://google.com/index.html
-  request_type: GET
-  last_updated_at: #{@time}
+  google:
+    file: 'index.html'
+    update_interval: 1.day
+    check_against: http://google.com/index.html
+    request_type: GET
+    last_updated_at: #{@time}
 EOF
     end
 

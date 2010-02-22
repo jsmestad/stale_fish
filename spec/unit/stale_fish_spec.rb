@@ -3,11 +3,11 @@ require File.join(File.dirname(__FILE__), *%w[.. spec_helper])
 describe StaleFish do
   before do
     @stale_fixture = StaleFish::Fixture.new(:last_updated_at => 1.week.ago.to_datetime,
-                                            :update_interval => 1.day,
+                                            :update_interval => '1.day',
                                             :request_type => 'GET',
                                             :check_against => 'http://google.com/index.html')
     @fresh_fixture = StaleFish::Fixture.new(:last_updated_at => 1.day.from_now.to_datetime,
-                                            :update_interval => 1.day,
+                                            :update_interval => '1.day',
                                             :request_type => 'GET',
                                             :check_against => 'http://google.com/index.html')
   end
@@ -15,7 +15,6 @@ describe StaleFish do
   context ".setup" do
     it "should call appropriate functions" do
       StaleFish.should_receive(:load)
-      StaleFish.should_receive(:register_fixtures)
       StaleFish.should_receive(:block_requests)
       StaleFish.setup
     end
@@ -133,9 +132,5 @@ describe StaleFish do
     it "should disable FakeWeb" do
       StaleFish.send(:block_requests).should == false
     end
-  end
-  
-  context ".register_fixtures" do
-    
   end
 end
