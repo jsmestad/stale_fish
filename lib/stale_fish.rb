@@ -22,17 +22,21 @@ module StaleFish
     end
 
     def update_stale(options={})
+      allow_requests
       fixtures(options).each do |fixture|
         if fixture.is_stale?
           fixture.update!
         end
       end
+      block_requests
     end
 
     def update_stale!(options={})
+      allow_requests
       fixtures(options).each do |fixture|
         fixture.update!
       end
+      block_requests
     end
 
     def fixtures(params=nil)
@@ -68,5 +72,12 @@ module StaleFish
         # output updated yaml
       end
 
+      def allow_requests
+        FakeWeb.allow_net_connect = true
+      end
+
+      def block_requests
+        FakeWeb.allow_net_connect = false
+      end
   end
 end

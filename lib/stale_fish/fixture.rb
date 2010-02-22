@@ -20,7 +20,6 @@ module StaleFish
     def update!
       # update fixture
       # needs to disengage FakeWeb before, and return state after
-
     end
 
     def lock!

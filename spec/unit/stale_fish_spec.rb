@@ -44,6 +44,12 @@ describe StaleFish do
       @fresh_fixture.should_not_receive(:update!)
       StaleFish.update_stale
     end
+
+    it "should block requests after completion" do
+      StaleFish.should_receive(:allow_requests)
+      StaleFish.should_receive(:block_requests)
+      StaleFish.update_stale
+    end
   end
 
   context ".update_stale!" do
@@ -54,6 +60,12 @@ describe StaleFish do
     it "should only call update! on all fixtures" do
       @stale_fixture.should_receive(:update!).once
       @fresh_fixture.should_receive(:update!).once
+      StaleFish.update_stale!
+    end
+
+    it "should block requests after completion" do
+      StaleFish.should_receive(:allow_requests)
+      StaleFish.should_receive(:block_requests)
       StaleFish.update_stale!
     end
   end
@@ -84,5 +96,17 @@ describe StaleFish do
   context ".write" do
     it "should maintain the original order of the configuration file"
     it "should overwrite the contents of the YAML file"
+  end
+
+  context ".allow_requests" do
+    it "should disable FakeWeb" do
+      StaleFish.send(:allow_requests).should == true
+    end
+  end
+
+  context ".block_requests" do
+    it "should disable FakeWeb" do
+      StaleFish.send(:block_requests).should == false
+    end
   end
 end
