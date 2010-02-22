@@ -28,7 +28,7 @@ module StaleFish
                         end
     end
 
-    def update_stale(options={})
+    def update_stale(options = :all)
       reset_fixtures = false
       
       allow_requests
@@ -43,7 +43,7 @@ module StaleFish
       write
     end
 
-    def update_stale!(options={})
+    def update_stale!(options = :all)
       allow_requests
       fixtures(options).each do |fixture|
         fixture.update!
