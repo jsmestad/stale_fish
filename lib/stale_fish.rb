@@ -9,6 +9,13 @@ module StaleFish
   # no one likes stale fish.
   class << self
 
+    def setup(config_location=nil)
+      self.configuration = config_location
+      load
+      register_fixtures
+      block_requests
+    end
+
     def configuration=(config)
       @configuration = config
     end
@@ -22,12 +29,16 @@ module StaleFish
     end
 
     def update_stale(options={})
+      reset_fixtures = false
+      
       allow_requests
       fixtures(options).each do |fixture|
         if fixture.is_stale?
           fixture.update!
+          reset_fixtures = true
         end
       end
+      register_fixtures if reset_fixtures
       block_requests
       write
     end
@@ -37,6 +48,7 @@ module StaleFish
       fixtures(options).each do |fixture|
         fixture.update!
       end
+      register_fixtures
       block_requests
       write
     end
@@ -80,6 +92,13 @@ module StaleFish
 
       def block_requests
         FakeWeb.allow_net_connect = false
+      end
+
+      def register_fixtures
+        FakeWeb.clean_registry
+        fixtures.each do |fixture|
+          fixture.register_lock!
+        end
       end
   end
 end

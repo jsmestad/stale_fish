@@ -37,6 +37,11 @@ describe StaleFish::Fixture do
     it "should return false when fresh" do
       @fresh_fixture.is_stale?.should == false
     end
+    
+    it "should return true when last_updated_at is empty" do
+      @stale_fixture.last_updated_at = nil
+      @stale_fixture.is_stale?.should == true
+    end
   end
 
   context "#update!" do

@@ -10,7 +10,7 @@ module StaleFish
     end
 
     def is_stale?
-      if (last_updated_at + update_interval) < Time.now
+      if last_updated_at.nil? || (last_updated_at + update_interval) < Time.now
         return true
       else
         return false
@@ -19,14 +19,14 @@ module StaleFish
 
     def update!
       uri, type = URI.parse(check_against), request_type.downcase.to_sym
-      Net::HTTP.start(uri.host) { |http|
+      Net::HTTP.start(uri.host) do |http|
         response = if type == :post
-                 http.post(uri.path, uri.query)
-               else
-                 http.get(uri.path)
-               end
+                     http.post(uri.path)
+                   else
+                     http.get(uri.path)
+                   end
         write_response_to_file(response.body)
-      }
+      end
 
       self.last_updated_at = Time.now
     end
