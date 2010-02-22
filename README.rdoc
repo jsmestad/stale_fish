@@ -1,42 +1,41 @@
 = Stale Fish
 
-This gem provides a method for keeping your fixtures in sync with their sources. This will prevent the scenario where your build is broken in production, but CI has a green build to do outdated fixture data. StaleFish also allows for FakeWeb integration and URI management.
+StaleFish is a utility for storing web requests as fixtures, faking web requests, and ensuring fixtures stay fresh by checking request at periodic intervals.
+It works at a global level, without modifying code or writing extensive stubs.
 
 == NOTICE
 
-1.3.x is a complete rewrite of the StaleFish utility. The API is based on: http://gist.github.com/308260
-
-The information below has not been corrected or updated.
+1.3.x is a complete rewrite of the StaleFish utility. It is incompatible with previous versions of StaleFish.
 
 == Features
 
-* Fixture update frequency uses the ActiveSupport relative time DSL
-* Versioned configuration file & fixtures means fixtures are only updated once per project.
-* Manage FakeWeb stubbed URI's through StaleFish
-* Automatic detection for Rails & Rack apps (default configuration locations)
+* Manage FakeWeb through StaleFish
+* Fixtures are updated based on a per-fixture update interval
+* Fixture update interval supports the ActiveSupport relative time DSL (ex. '30.minutes', '2.days', '1.year')
+* Configuration file and fixture data is version control friendly
+* Specify which fixtures are checked for freshness using :all, :only, & :except arguement options
+* Force update of all fixtures regardless of freshness (bypass freshness check)
 * Test Framework agnostic (tested with Test::Unit & RSpec)
-* Update all fixtures, specified fixtures, or forced update are all supported through the StaleFish.update_stale(*args) method
-* Fixtures are ONLY updated when a valid HTTP request is made, if server returns anything other than 200, an error is thrown failing the tests.
 
 == How To
 
-Simply drop in a YAML file in your application (default location: {test/spec}/stale_fish.yml; overwrite by setting StaleFish::Utility.config_path) and issue the following commands.
+Simply drop in a YAML file in your application (recommended location: {test/spec}/fixtures/stale_fish.yml) and issue the following commands.
 
 A sample YAML file:
 
   stale:
-    configuration:
-      use_fakeweb: true
-    yahoo: 
-      file_path: RAILS_ROOT + '/spec/fixtures/yahoo.html'
-      source_url: http://www.yahoo.com
-      last_updated_at: 
-      update_frequency: 1.day
-    google: 
-      file_path:  RAILS_ROOT + '/spec/fixtures/github_commit.json'
-      source_url: http://api.github.com/post_commit/
-      last_updated_at: 
-      update_frequency: 2.weeks
+    twitter:                                          # fixture name (this must be unique)
+      file: 'timeline.json'                           # fixture save location
+      update_interval: 30.days                        # update interval
+      check_against: http://twitter.com/api/timeline  # data to update fixture with when stale
+      request_type: POST                              # request type to use when updating: GET, POST
+      last_updated_at:                                # timestamp of last fixture update (can be left blank)
+    gh_commits:
+      file: 'commits.xml'
+      update_interval: 3.days
+      check_against: http://api.github.com/commits.xml
+      request_type: GET
+      last_updated_at:
 
 Specify one block for every fixture you would like to update. The frequency field takes any relative date included in the ActiveSupport library.
 
@@ -46,7 +45,7 @@ For a single test add it to a before block
 
   describe UsersController do
     before do
-      StaleFish.update_stale("facebook", "yahoo")
+      StaleFish.update_stale
     end
     ....
   end
@@ -57,7 +56,7 @@ For all tests add the following to spec_helper.rb
 
   Spec::Runner.configure do |config|
     ...
-    config.before do
+    config.before :suite do
       StaleFish.update_stale
     end
     ....
@@ -69,14 +68,12 @@ For all tests add the following to test_helper.rb
 
   class Test::Unit::TestCase
     ...
-    self.use_transactional_fixtures = true
-    self.use_instantiated_fixtures  = false
-    ...
     setup do
       StaleFish.update_stale
     end
     ...
   end
+
 
 == More Info
 
@@ -84,8 +81,8 @@ View the wiki: http://wiki.github.com/jsmestad/stale_fish
 
 == Thanks
 
-Paul Sadauskas for his work on Resourceful (used by StaleFish to provide accurate http handling when updating fixtures)
+This utility uses FakeWeb, thanks to those contributors for there excellent work.
 
 == Copyright
 
-Copyright (c) 2009 Justin Smestad. See LICENSE for details.
+Copyright (c) 2009-2010 Justin Smestad. See LICENSE for details.

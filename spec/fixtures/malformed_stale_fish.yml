@@ -1,5 +1,0 @@
-stale:
-  google:
-    file_path: google.html
-  yahoo:
-    update_frequency: 2.weeks.ago
