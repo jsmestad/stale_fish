@@ -12,7 +12,7 @@ module StaleFish
     end
 
     def is_stale?
-      if last_updated_at.nil? || (last_updated_at + update_interval) < DateTime.now
+      if last_updated_at.nil? || (last_updated_at + eval(update_interval)) < DateTime.now
         return true
       else
         return false
