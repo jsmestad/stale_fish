@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), *%w[.. spec_helper])
 
 describe StaleFish::Fixture do
   before do
-    @time = Time.now
+    @time = DateTime.now
     @args = {
       :name => 'commits',
       :file => 'commit.json',
@@ -54,7 +54,7 @@ describe StaleFish::Fixture do
     it "should update the fixture data" do
       @fixture.should_receive(:write_response_to_file).once.and_return(true)
       @fixture.update!
-      @fixture.last_updated_at.should be_a(Time)
+      @fixture.last_updated_at.should be_a(DateTime)
     end
 
     it "should use Net::HTTP#get with a GET request_type"

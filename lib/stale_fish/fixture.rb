@@ -1,3 +1,5 @@
+require 'activesupport'
+
 module StaleFish
   class Fixture
     attr_accessor :name, :file, :last_updated_at
@@ -10,7 +12,7 @@ module StaleFish
     end
 
     def is_stale?
-      if last_updated_at.nil? || (DateTime.parse(last_updated_at) + update_interval) < DateTime.now
+      if last_updated_at.nil? || (last_updated_at + update_interval) < DateTime.now
         return true
       else
         return false
@@ -49,6 +51,14 @@ module StaleFish
   last_updated_at: #{last_updated_at}
 EOF
       return yaml
+    end
+    
+    def last_updated_at
+      if @last_updated_at.nil? || @last_updated_at.is_a?(DateTime)
+        @last_updated_at
+      else
+        DateTime.parse(@last_updated_at.to_s)
+      end
     end
 
     protected

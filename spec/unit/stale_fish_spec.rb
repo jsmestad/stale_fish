@@ -2,11 +2,11 @@ require File.join(File.dirname(__FILE__), *%w[.. spec_helper])
 
 describe StaleFish do
   before do
-    @stale_fixture = StaleFish::Fixture.new(:last_updated_at => 1.week.ago,
+    @stale_fixture = StaleFish::Fixture.new(:last_updated_at => 1.week.ago.to_datetime,
                                             :update_interval => 1.day,
                                             :request_type => 'GET',
                                             :check_against => 'http://google.com/index.html')
-    @fresh_fixture = StaleFish::Fixture.new(:last_updated_at => 1.day.from_now,
+    @fresh_fixture = StaleFish::Fixture.new(:last_updated_at => 1.day.from_now.to_datetime,
                                             :update_interval => 1.day,
                                             :request_type => 'GET',
                                             :check_against => 'http://google.com/index.html')
