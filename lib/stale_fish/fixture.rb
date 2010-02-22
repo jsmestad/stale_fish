@@ -1,7 +1,7 @@
 module StaleFish
   class Fixture
     attr_accessor :name, :file, :last_updated_at
-    attr_accessor :update_interval, :check_against, :request_type
+    attr_accessor :update_interval, :update_string, :check_against, :request_type
 
     def initialize(attributes={})
       attributes.each do |key, value|
@@ -27,7 +27,7 @@ module StaleFish
                else
                  http.get(uri.path)
                end
-        write_response_to_file(response)
+        write_response_to_file(response.body)
       }
 
       self.last_updated_at = Time.now
@@ -41,8 +41,16 @@ module StaleFish
     end
 
     def to_yaml
-      # convert obj to stale_fish yaml
-      # NOTE: ORDER MATTERS WHEN WRITING
+      # update_interval.inspect trick is to prevent Fixnum being written
+      yaml = <<-EOF
+#{name}:
+  file: '#{file}'
+  update_interval: #{update_interval.inspect.gsub(/ /, '.')}
+  check_against: #{check_against}
+  request_type: #{request_type}
+  last_updated_at: #{last_updated_at}
+EOF
+      return yaml
     end
 
     protected
@@ -55,8 +63,8 @@ module StaleFish
         end
       end
 
-      def write_response_to_file(response)
-        File.open(file, "w") { |file| file.write(response.body) }
+      def write_response_to_file(body)
+        File.open(file, "w") { |file| file.write(body) }
       end
   end
 end

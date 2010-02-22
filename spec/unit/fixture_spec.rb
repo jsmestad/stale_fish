@@ -1,18 +1,19 @@
 require File.join(File.dirname(__FILE__), *%w[.. spec_helper])
 
 describe StaleFish::Fixture do
-  context "#initialize" do
-    before do
-      @args = {
-        :name => 'commits',
-        :file => 'commit.json',
-        :last_updated_at => Time.now,
-        :update_interval => 2.days,
-        :check_against => 'http://google.com',
-        :request_type => 'GET'
-      }
-    end
+  before do
+    @time = Time.now
+    @args = {
+      :name => 'commits',
+      :file => 'commit.json',
+      :last_updated_at => @time,
+      :update_interval => 2.days,
+      :check_against => 'http://google.com',
+      :request_type => 'GET'
+    }
+  end
 
+  context "#initialize" do
     it "set the proper arguements" do
       fixture = StaleFish::Fixture.new(@args)
       @args.each do |key, value|
@@ -68,16 +69,55 @@ describe StaleFish::Fixture do
   end
 
   context "#to_yaml" do
-    it "should have the proper schema"
+    before do
+      @fixture = StaleFish::Fixture.new(:name => 'google',
+                                        :update_interval => 1.day,
+                                        :request_type => 'GET',
+                                        :check_against => 'http://google.com/index.html',
+                                        :file => 'index.html',
+                                        :last_updated_at => @time)
+      @proper_yaml =
+<<-EOF
+google:
+  file: 'index.html'
+  update_interval: 1.day
+  check_against: http://google.com/index.html
+  request_type: GET
+  last_updated_at: #{@time}
+EOF
+    end
+
+    it "should have the proper schema" do
+      @fixture.to_yaml.should == @proper_yaml
+    end
   end
 
   context "#build_uri" do
-    it "should parse anything with a port as a regular expression"
-    it "should parse anything without a port as a string"
+    before do
+      @fixture = StaleFish::Fixture.new(@args)
+    end
+
+    it "should parse anything with a port as a regular expression" do
+      @fixture.check_against = 'http://www.google.com:443/index.html'
+      @fixture.send(:build_uri).should be_a(Regexp)
+    end
+
+    it "should parse anything without a port as a string" do
+      @fixture.check_against = 'http://www.google.com/index.html'
+      @fixture.send(:build_uri).should be_a(String)
+    end
   end
 
   context "#write_response_to_file" do
-    it "should update the passed in file"
+    before do
+      @fixture = StaleFish::Fixture.new(@args)
+    end
+
+    it "should update the passed in file" do
+      File.should_receive(:open).and_return(true)
+      @fixture.send(:write_response_to_file, 'this is a response')
+    end
+
     it "should have failover with a bad response"
   end
 end

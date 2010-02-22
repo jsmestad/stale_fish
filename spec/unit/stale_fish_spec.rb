@@ -39,6 +39,7 @@ describe StaleFish do
       StaleFish.stub!(:fixtures).and_return([@stale_fixture,@fresh_fixture])
       @stale_fixture.stub!(:update!).and_return(true)
       @fresh_fixture.stub!(:update!).and_return(true)
+      StaleFish.should_receive(:write)
     end
 
     it "should only call update! on stale fixtures" do
@@ -59,6 +60,7 @@ describe StaleFish do
       StaleFish.stub!(:fixtures).and_return([@stale_fixture,@fresh_fixture])
       @stale_fixture.stub!(:update!).and_return(true)
       @fresh_fixture.stub!(:update!).and_return(true)
+      StaleFish.should_receive(:write)
     end
 
     it "should only call update! on all fixtures" do
@@ -98,8 +100,14 @@ describe StaleFish do
   end
 
   context ".write" do
-    it "should maintain the original order of the configuration file"
-    it "should overwrite the contents of the YAML file"
+    before do
+      StaleFish.stub!(:fixtures).and_return([@stale_fixture,@fresh_fixture])
+      File.should_receive(:open).and_return(true)
+    end
+
+    it "should overwrite the contents of the YAML file" do
+      StaleFish.send(:write)
+    end
   end
 
   context ".allow_requests" do

@@ -29,6 +29,7 @@ module StaleFish
         end
       end
       block_requests
+      write
     end
 
     def update_stale!(options={})
@@ -37,6 +38,7 @@ module StaleFish
         fixture.update!
       end
       block_requests
+      write
     end
 
     def fixtures(params=nil)
@@ -64,12 +66,12 @@ module StaleFish
       end
 
       def write
-        # TODO update the loaded YAML file
         updated_yaml = []
         fixtures.each do |fixture|
-          update_yaml << fixture.to_yaml
+          updated_yaml << fixture.to_yaml
         end
-        # output updated yaml
+        updated_yaml = { :stale => updated_yaml }
+        File.open(configuration, 'w') { |file| updated_yaml.to_yaml }
       end
 
       def allow_requests
