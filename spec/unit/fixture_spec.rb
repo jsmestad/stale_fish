@@ -39,10 +39,23 @@ describe StaleFish::Fixture do
   end
 
   context "#update!" do
-    it "should update the fixture data"
+    before do
+      @fixture = StaleFish::Fixture.new(:request_type => 'GET',
+                                        :check_against => 'http://google.com/index.html',
+                                        :file => 'index.html')
+    end
+
+    it "should update the fixture data" do
+      @fixture.should_receive(:write_response_to_file).once.and_return(true)
+      @fixture.update!
+      @fixture.last_updated_at.should be_a(Time)
+    end
+
+    it "should use Net::HTTP#get with a GET request_type"
+    it "should use Net::HTTP#post with a POST request_type"
   end
 
-  context "#lock!" do
+  context "#register_lock!" do
     before do
       @fixture = StaleFish::Fixture.new(:request_type => 'GET',
                                         :check_against => 'http://google.com/index.html',
@@ -50,7 +63,7 @@ describe StaleFish::Fixture do
     end
 
     it "should add fakeweb register_uri" do
-      @fixture.lock!.should == true
+      @fixture.register_lock!.should == true
     end
   end
 
@@ -61,5 +74,10 @@ describe StaleFish::Fixture do
   context "#build_uri" do
     it "should parse anything with a port as a regular expression"
     it "should parse anything without a port as a string"
+  end
+
+  context "#write_response_to_file" do
+    it "should update the passed in file"
+    it "should have failover with a bad response"
   end
 end

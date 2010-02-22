@@ -37,6 +37,8 @@ describe StaleFish do
   context ".update_stale" do
     before do
       StaleFish.stub!(:fixtures).and_return([@stale_fixture,@fresh_fixture])
+      @stale_fixture.stub!(:update!).and_return(true)
+      @fresh_fixture.stub!(:update!).and_return(true)
     end
 
     it "should only call update! on stale fixtures" do
@@ -55,6 +57,8 @@ describe StaleFish do
   context ".update_stale!" do
     before do
       StaleFish.stub!(:fixtures).and_return([@stale_fixture,@fresh_fixture])
+      @stale_fixture.stub!(:update!).and_return(true)
+      @fresh_fixture.stub!(:update!).and_return(true)
     end
 
     it "should only call update! on all fixtures" do

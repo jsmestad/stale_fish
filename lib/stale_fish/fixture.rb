@@ -20,9 +20,20 @@ module StaleFish
     def update!
       # update fixture
       # needs to disengage FakeWeb before, and return state after
+      uri, type = URI.parse(check_against), request_type.downcase.to_sym
+      Net::HTTP.start(uri.host) { |http|
+        response = if type == :post
+                 http.post(uri.path, uri.query)
+               else
+                 http.get(uri.path)
+               end
+        write_response_to_file(response)
+      }
+
+      self.last_updated_at = Time.now
     end
 
-    def lock!
+    def register_lock!
       uri, type = build_uri, request_type.downcase.to_sym
       FakeWeb.register_uri(type, uri, :body => file)
 
@@ -42,6 +53,10 @@ module StaleFish
         else
           check_against
         end
+      end
+
+      def write_response_to_file(response)
+        File.open(file, "w") { |file| file.write(response.body) }
       end
   end
 end
