@@ -28,7 +28,7 @@ module StaleFish
         write_response_to_file(response.body)
       end
 
-      self.last_updated_at = Time.now
+      self.last_updated_at = DateTime.now
     end
 
     def register_lock!
