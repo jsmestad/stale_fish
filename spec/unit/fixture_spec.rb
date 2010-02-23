@@ -58,7 +58,13 @@ describe StaleFish::Fixture do
     end
 
     it "should use Net::HTTP#get with a GET request_type"
-    it "should use Net::HTTP#post with a POST request_type"
+    
+    it "should call update_method when present" do
+      @fixture.update_method = "CONSTANT"
+      @fixture.should_receive(:update_by_method).once
+      @fixture.update!
+      
+    end
   end
 
   context "#register_lock!" do
