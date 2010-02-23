@@ -32,7 +32,7 @@ module StaleFish
     end
     
     def update_by_method
-      return eval(check_against_method)
+      return eval(update_method)
     end
 
     def update_by_network
