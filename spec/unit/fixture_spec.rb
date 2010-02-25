@@ -37,7 +37,7 @@ describe StaleFish::Fixture do
     it "should return false when fresh" do
       @fresh_fixture.is_stale?.should == false
     end
-    
+
     it "should return true when last_updated_at is empty" do
       @stale_fixture.last_updated_at = nil
       @stale_fixture.is_stale?.should == true
@@ -58,12 +58,12 @@ describe StaleFish::Fixture do
     end
 
     it "should use Net::HTTP#get with a GET request_type"
-    
+
     it "should call update_method when present" do
       @fixture.update_method = "CONSTANT"
       @fixture.should_receive(:update_by_method).once
       @fixture.update!
-      
+
     end
   end
 

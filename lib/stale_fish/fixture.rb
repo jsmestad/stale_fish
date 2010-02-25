@@ -49,7 +49,7 @@ module StaleFish
 
     def register_lock!
       uri, type = build_uri, request_type.downcase.to_sym
-      FakeWeb.register_uri(type, uri, :body => 'hey dude')
+      FakeWeb.register_uri(type, uri, :body => File.join(File.dirname(StaleFish.configuration), file))
 
       return FakeWeb.registered_uri?(type, uri)
     end
