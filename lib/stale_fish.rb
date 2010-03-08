@@ -69,7 +69,7 @@ module StaleFish
 
       def load
         @fixtures = []
-        entries = YAML::load(File.open(configuration))['stale']#.symbolize_keys!
+        entries = YAML::load(File.open(configuration))['stale']
         entries.each do |entry|
           entry.each do |key, definition|
             self.fixtures << StaleFish::Fixture.new(definition.merge({:name => key.to_s}))

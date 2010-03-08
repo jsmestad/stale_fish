@@ -23,15 +23,16 @@ Simply drop in a YAML file in your application (recommended location: {test/spec
 
 A sample YAML file:
 
-  stale:
-    twitter:                                          # fixture name (this must be unique)
+  --- !omap
+  - stale:
+    - twitter:                                          # fixture name (this must be unique)
       file: 'timeline.json'                           # fixture save location
       update_interval: 30.days                        # update interval
       check_against: http://twitter.com/api/timeline  # data to update fixture with when stale
       request_type: POST                              # request type to use when updating: GET, POST
       update_method: StaleFishFixture.update_me       # optional: this method is evaluated for a response instead of hitting the check_against param
       last_updated_at:                                # timestamp of last fixture update (can be left blank)
-    gh_commits:
+    - gh_commits:
       file: 'commits.xml'
       update_interval: 3.days
       check_against: http://api.github.com/commits.xml
