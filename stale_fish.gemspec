@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{stale_fish}
-  s.version = "1.3.0.pre3"
+  s.version = "1.3.0"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Justin Smestad"]
-  s.date = %q{2010-02-23}
+  s.date = %q{2010-03-08}
   s.email = %q{justin.smestad@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/jsmestad/stale_fish}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{keeps fixtures synchronized with sources to prevent outdated fixtures going undetected.}
   s.test_files = [
     "spec/spec_helper.rb",

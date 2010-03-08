@@ -30,7 +30,7 @@ module StaleFish
       write_response_to_file(response)
       self.last_updated_at = DateTime.now
     end
-    
+
     def update_by_method
       return eval(update_method)
     end
@@ -58,24 +58,24 @@ module StaleFish
       # update_interval.inspect trick is to prevent Fixnum being written
       yaml = ""
       yaml << <<-EOF
-  #{name}:
-    file: '#{file}'
-    update_interval: #{update_interval.inspect.gsub(/ /, '.').gsub(/"/, '')}
-    check_against: #{check_against}
-    request_type: #{request_type}
+  - #{name}:
+      file: '#{file}'
+      update_interval: #{update_interval.inspect.gsub(/ /, '.').gsub(/"/, '')}
+      check_against: #{check_against}
+      request_type: #{request_type}
 EOF
     if update_method
       yaml << <<-EOF
-    update_method: #{update_method}
+      update_method: #{update_method}
 EOF
     end
-    
+
     yaml << <<-EOF
-    last_updated_at: #{last_updated_at}
+      last_updated_at: #{last_updated_at}
 EOF
       return yaml
     end
-    
+
     def last_updated_at
       if @last_updated_at.nil? || @last_updated_at.is_a?(DateTime)
         @last_updated_at
@@ -97,5 +97,6 @@ EOF
       def write_response_to_file(body)
         File.open(File.join(File.dirname(StaleFish.configuration), file), "w") { |file| file.write(body) }
       end
+
   end
 end

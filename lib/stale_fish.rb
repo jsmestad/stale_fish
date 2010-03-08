@@ -29,7 +29,7 @@ module StaleFish
 
     def update_stale(options = :all)
       reset_fixtures = false
-      
+
       allow_requests
       fixtures(options).each do |fixture|
         if fixture.is_stale?
@@ -69,15 +69,17 @@ module StaleFish
 
       def load
         @fixtures = []
-        definitions = YAML::load(File.open(configuration))['stale'].symbolize_keys!
-        definitions.each do |key, definition|
-          self.fixtures << StaleFish::Fixture.new(definition.merge({:name => key.to_s}))
+        entries = YAML::load(File.open(configuration))['stale']#.symbolize_keys!
+        entries.each do |entry|
+          entry.each do |key, definition|
+            self.fixtures << StaleFish::Fixture.new(definition.merge({:name => key.to_s}))
+          end
         end
         return fixtures
       end
 
       def write
-        updated_yaml = "stale:\n"
+        updated_yaml = "--- !omap\n- stale:\n"
         fixtures.each do |fixture|
           updated_yaml << fixture.to_yaml
         end
@@ -96,9 +98,10 @@ module StaleFish
         end
         FakeWeb.allow_net_connect = false
       end
-      
+
       def drop_locks
         FakeWeb.clean_registry
       end
+
   end
 end
