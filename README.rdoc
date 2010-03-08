@@ -25,7 +25,7 @@ A sample YAML file:
 
   --- !omap
   - stale:
-    - twitter:                                          # fixture name (this must be unique)
+    - twitter:                                        # fixture name (this must be unique)
       file: 'timeline.json'                           # fixture save location
       update_interval: 30.days                        # update interval
       check_against: http://twitter.com/api/timeline  # data to update fixture with when stale
