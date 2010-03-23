@@ -83,7 +83,7 @@ View the wiki: http://wiki.github.com/jsmestad/stale_fish
 
 == Thanks
 
-This utility uses FakeWeb, thanks to those contributors for there excellent work.
+This utility uses FakeWeb, thanks to those contributors for their excellent work.
 
 == Copyright
 
