@@ -1,3 +1,5 @@
+$:.push File.expand_path("../lib", __FILE__)
+
 Gem::Specification.new do |s|
   s.name = %q{stale_fish}
   s.version = "1.3.1"
@@ -5,6 +7,8 @@ Gem::Specification.new do |s|
   s.date = %q{2012-02-16}
   s.email = %q{justin.smestad@gmail.com}
   s.homepage = %q{https://github.com/jsmestad/stale_fish}
+  s.summary = "Stub HTTP responses"
+  s.description = "Stub HTTP responses"
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
 
