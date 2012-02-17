@@ -1,14 +1,10 @@
-source :gemcutter
+source 'http://rubygems.org'
 
-group :runtime do
-  gem 'fakeweb'
-  gem 'activesupport', :require => "active_support/core_ext/numeric/time"
-end
+gemspec
 
 group :test do
-  gem 'rspec', :require => 'spec'
+  gem 'rspec', '~> 2.6.0'
   gem 'rake'
-  gem 'bundler', '~> 0.9.5'
-  gem 'jeweler'
+  gem 'bundler'
 end
 

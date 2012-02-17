@@ -1,5 +1,3 @@
-require 'activesupport'
-
 module StaleFish
   class Fixture
     attr_accessor :name, :file, :last_updated_at
